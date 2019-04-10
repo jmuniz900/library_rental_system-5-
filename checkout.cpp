@@ -4,6 +4,7 @@
 #include <fstream>
 #include <string>
 #include <vector>
+#include <string>
 #include "person.cpp"
 #include "book.cpp"
 
@@ -25,22 +26,34 @@ void printMenu() {
 // You are not obligated to use these function declarations - they're just given as examples
 void readBooks(vector<Book *> & myBooks) {
     fstream bookFile;
-    int     id;
+    string     id;
+    int     idN;
     string  titleN;
     string  authorN;
     string  categN;
-    Book * bookPtr = new Book(id, titleN, authorN, categN);
+    string whitespace;
+    Book * bookPtr = new Book();
 
     bookFile.open("books.txt");
     if(bookFile.is_open()){
       cout << "Successfully opened books.txt" << endl;
       while(!bookFile.eof()){
-        bookFile >> id >> titleN >> authorN >> categN;
-        bookPtr->Book(id, titleN, authorN, categN));
-          myBooks.emplace_back(bookPtr);
+        getline(bookFile, id);
+        stoi(id, idN);
+        getline(bookFile, titleN);
+        getline(bookFile, authorN);
+        getline(bookFile, categN);
+        getline(bookFile, whitespace);
 
+    //    bookPtr = Book(id, titleN, authorN, categN);
+    //    bookPtr->Book(id, titleN, authorN, categN);
+        myBooks.emplace_back(bookPtr);
+
+        for(int i = 0; i < 20; i++){
+          cout << myBooks[i] << endl;
+        }
       }
-      cout << myBooks[0]->getTitle();
+  //    cout << myBooks[0]->getTitle();
     }
 }
 
@@ -69,6 +82,9 @@ int main()
     int bookID;
 
     int choice;
+
+    readBooks(books);
+
     do
     {
         // If you use cin anywhere, don't forget that you have to handle the <ENTER> key that
