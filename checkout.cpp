@@ -26,53 +26,80 @@ void printMenu() {
 // You are not obligated to use these function declarations - they're just given as examples
 void readBooks(vector<Book *> & myBooks) {
     fstream bookFile;
-    string     id;
-    int     idN;
+    int     id;
     string  titleN;
     string  authorN;
     string  categN;
     string whitespace;
-    Book * bookPtr = new Book();
 
     bookFile.open("books.txt");
     if(bookFile.is_open()){
       cout << "Successfully opened books.txt" << endl;
       while(!bookFile.eof()){
-        getline(bookFile, id);
-        stoi(id, idN);
+        getline(bookFile, id);      //Isn't taking in the int from getline for some strange reason.
         getline(bookFile, titleN);
         getline(bookFile, authorN);
         getline(bookFile, categN);
         getline(bookFile, whitespace);
 
+        Book * bookPtr = new Book(id, titleN, authorN, categN);
+        myBooks.push_back(bookPtr);
+        delete bookPtr;
+
     //    bookPtr = Book(id, titleN, authorN, categN);
     //    bookPtr->Book(id, titleN, authorN, categN);
-        myBooks.emplace_back(bookPtr);
-
-        for(int i = 0; i < 20; i++){
-          cout << myBooks[i] << endl;
         }
       }
   //    cout << myBooks[0]->getTitle();
     }
+
+void readPersons(vector<Person *> & myCardholders) {
+    fstream personFile;
+    int cardID;
+    bool active;
+    string firstName;
+    string lastName;
+    string name;
+
+    personFile.open("persons.txt");
+    if(personFile.is_open()){
+      cout << "Successfully opened persons.txt";
+      while(!personFile.eof()){
+        personFile >> cardID >> active >> firstName >> lastName;
+        name = firstName + " " + lastName;
+        Person *personptr = new Person(cardID, active, firstName, lastName);
+        myCardholders.push_back(personptr);
+        delete personptr;
+      }
+    }
+    else
+      cout << "Error: Couldn't open file!";
 }
 
-/*int readPersons(vector<Person *> & myCardholders) {
-    return 0;
-}
-
-void readRentals(vector<Book *> & myBooks, vector<Person *> myCardholders) {
+/*void readRentals(vector<Book *> & myBooks, vector<Person *> myCardholders) {
     return;
 }
-
+*/
 void openCard(vector<Person *> & myCardholders, int nextID) {
-    return;
+  string firName;
+  string lasName;
+
+  cout << "Please enter your first name: ";
+  cin >> firName;
+  cout << endl;
+  cout << "Please enter your last name: ";
+  cin >> lasName;
+  cout << endl;
+
+  Person *tmpPerson = new Person(nextID, 1, firName, lasName);
+  myCardholders.push_back(tmpPerson);
+
 }
 
 Book * searchBook(vector<Book *> myBooks, int id) {
     return nullptr;
 }
-*/
+
 
 int main()
 {
@@ -82,6 +109,8 @@ int main()
     int bookID;
 
     int choice;
+    int amountOfCardholders;
+    int newID;
 
     readBooks(books);
 
@@ -144,6 +173,9 @@ int main()
                 break;
 
             case 6:
+              amountOfCardholders = cardholders.size();
+              newID = cardholders[amountOfCardholders].getId() + 1;
+              openCard(cardholders, newID);
                 // Open new library card
                 break;
 
