@@ -5,6 +5,7 @@
 #include <string>
 #include <vector>
 #include <string>
+#include <sstream>
 #include "person.cpp"
 #include "book.cpp"
 
@@ -31,26 +32,38 @@ void readBooks(vector<Book *> & myBooks) {
     string  authorN;
     string  categN;
     string whitespace;
+    int counter;
+//    stringstream idN;
+//    int idNum;
+    Book * bookPtr;
 
     bookFile.open("books.txt");
     if(bookFile.is_open()){
       cout << "Successfully opened books.txt" << endl;
       while(!bookFile.eof()){
-        getline(bookFile, id);      //Isn't taking in the int from getline for some strange reason.
+        bookFile >> id;
+        getline(bookFile, whitespace);      //Now it's only taking the ID number from the first entry.
         getline(bookFile, titleN);
         getline(bookFile, authorN);
         getline(bookFile, categN);
         getline(bookFile, whitespace);
 
-        Book * bookPtr = new Book(id, titleN, authorN, categN);
-        myBooks.push_back(bookPtr);
-        delete bookPtr;
+      //  idN << id;
+    //    idN >> idNum;
 
+  //      cout << id << " " << titleN << " " << authorN << " " << categN << endl;
+
+        bookPtr = new Book(id, titleN, authorN, categN);
+        myBooks.push_back(bookPtr);
+
+    //    cout << myBooks[counter]->getTitle() << endl;
+        counter++;
     //    bookPtr = Book(id, titleN, authorN, categN);
     //    bookPtr->Book(id, titleN, authorN, categN);
         }
       }
   //    cout << myBooks[0]->getTitle();
+    bookPtr = nullptr;
     }
 
 void readPersons(vector<Person *> & myCardholders) {
@@ -59,21 +72,27 @@ void readPersons(vector<Person *> & myCardholders) {
     bool active;
     string firstName;
     string lastName;
-    string name;
+//    string name;
+    Person *personptr;
+    int counter;
 
     personFile.open("persons.txt");
     if(personFile.is_open()){
-      cout << "Successfully opened persons.txt";
+      cout << "Successfully opened persons.txt" << endl;
       while(!personFile.eof()){
         personFile >> cardID >> active >> firstName >> lastName;
-        name = firstName + " " + lastName;
-        Person *personptr = new Person(cardID, active, firstName, lastName);
-        myCardholders.push_back(personptr);
-        delete personptr;
+  //      name = firstName + " " + lastName;
+
+      personptr = new Person(cardID, active, firstName, lastName);
+      myCardholders.push_back(personptr);
+  //    cout << myCardholders[counter]->getFirstName() << endl;
+      counter++;
       }
     }
     else
       cout << "Error: Couldn't open file!";
+
+      personptr = nullptr;
 }
 
 /*void readRentals(vector<Book *> & myBooks, vector<Person *> myCardholders) {
@@ -94,6 +113,8 @@ void openCard(vector<Person *> & myCardholders, int nextID) {
   Person *tmpPerson = new Person(nextID, 1, firName, lasName);
   myCardholders.push_back(tmpPerson);
 
+  cout << "Card ID " << nextID << " active" << endl;
+  cout << "Cardholder: " << firName + " " + lasName << endl;
 }
 
 Book * searchBook(vector<Book *> myBooks, int id) {
@@ -111,9 +132,15 @@ int main()
     int choice;
     int amountOfCardholders;
     int newID;
+    int lastID;
 
     readBooks(books);
+    readPersons(cardholders);
 
+    for(int j = 0; j < cardholders.size(); j++){
+      lastID = cardholders[j]->getId();
+    }
+  //  cout << lastID << endl;
     do
     {
         // If you use cin anywhere, don't forget that you have to handle the <ENTER> key that
@@ -129,10 +156,12 @@ int main()
                 cout << endl;
 
                 for(int i = 0; i < cardholders.size(); i++){
-                  if(cardID == cardholders[i]->getId())
+                  if(cardID == cardholders[i]->getId()){
                     cout << "Cardholder: " << cardholders[i]->fullName() << endl;
-                  else
+                  }
+                  if(cardID != cardholders[i]->getId()){
                     cout << "Card ID not found" << endl;
+                  }
                 }
 
                 cout << "Please enter the book ID: ";
@@ -158,6 +187,20 @@ int main()
 
             case 2:
                 // Book return
+                cout << "Please enter the book ID to return: ";
+                cin >> bookID;
+
+                for (std::vector<Book *>::iterator it = books.begin() ; it != books.end(); it++){
+                  if(bookID == it->getId()){
+                    cout << "Title: " << *it << endl;
+                    it->setPersonPtr(nullptr);
+                    cout << "Return Completed" << endl;
+                  }
+                  else if(it == books.end()){
+                    cout << "Book ID not found" << endl;
+                  }
+                }
+
                 break;
 
             case 3:
@@ -174,8 +217,8 @@ int main()
 
             case 6:
               amountOfCardholders = cardholders.size();
-              newID = cardholders[amountOfCardholders].getId() + 1;
-              openCard(cardholders, newID);
+              lastID += 1;
+              openCard(cardholders, lastID);
                 // Open new library card
                 break;
 
