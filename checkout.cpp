@@ -95,10 +95,12 @@ void readPersons(vector<Person *> & myCardholders) {
       personptr = nullptr;
 }
 
-/*void readRentals(vector<Book *> & myBooks, vector<Person *> myCardholders) {
+void readRentals(vector<Book *> & myBooks, vector<Person *> myCardholders) {
+    for(int i = 0; i < myBooks.size(); i++){
+      if(myBooks[i].getPersonPtr() != nullptr)
+    }
     return;
 }
-*/
 void openCard(vector<Person *> & myCardholders, int nextID) {
   string firName;
   string lasName;
@@ -115,10 +117,19 @@ void openCard(vector<Person *> & myCardholders, int nextID) {
 
   cout << "Card ID " << nextID << " active" << endl;
   cout << "Cardholder: " << firName + " " + lasName << endl;
+  tmpPerson = nullptr;
 }
 
 Book * searchBook(vector<Book *> myBooks, int id) {
-    return nullptr;
+    int bookIndex;
+
+    for(int i = 0; i < myBooks.size(); i++){
+      if(id == myBooks[i]->getId()){
+        bookIndex = i;
+      }
+    }
+
+    return myBooks[bookIndex];
 }
 
 
@@ -133,6 +144,8 @@ int main()
     int amountOfCardholders;
     int newID;
     int lastID;
+    char ynChoice;
+    int cardIndex = 0;
 
     readBooks(books);
     readPersons(cardholders);
@@ -157,32 +170,16 @@ int main()
 
                 for(int i = 0; i < cardholders.size(); i++){
                   if(cardID == cardholders[i]->getId()){
-                    cout << "Cardholder: " << cardholders[i]->fullName() << endl;
-                  }
-                  if(cardID != cardholders[i]->getId()){
-                    cout << "Card ID not found" << endl;
+                    cardIndex = i;
+                    cout << "Cardholder: " << cardholders[cardIndex]->fullName() << endl;
+                    break;
                   }
                 }
 
                 cout << "Please enter the book ID: ";
                 cin >> bookID;
-                cout << endl;
+                cout << "Title: " << searchBook(books, bookID)->getTitle() << endl;
 
-                for(int j = 0; j < books.size(); j++){
-                  if(bookID == books[j]->getId())
-                    cout << "Title: " << books[j]->getTitle() << endl;
-                  else
-                    cout << "Book ID not found" << endl;
-                }
-
-                for(int i = 0; i < cardholders.size(); i++){
-                  for(int j = 0; j < books.size(); j++){
-                    if(bookID == books[j]->getId() || cardID == cardholders[i]->getId()){
-                      books[j]->setPersonPtr(cardholders[i]);
-                    }
-                  }
-                }
-                cout << "Rental Completed" << endl;
                 break;
 
             case 2:
@@ -190,21 +187,23 @@ int main()
                 cout << "Please enter the book ID to return: ";
                 cin >> bookID;
 
-                for (std::vector<Book *>::iterator it = books.begin() ; it != books.end(); it++){
-                  if(bookID == it->getId()){
-                    cout << "Title: " << *it << endl;
-                    it->setPersonPtr(nullptr);
-                    cout << "Return Completed" << endl;
-                  }
-                  else if(it == books.end()){
-                    cout << "Book ID not found" << endl;
-                  }
-                }
+                cout << "Title: " << *it << endl;
+                searchBook(books, bookID)->setPersonPtr(nullptr);
+                cout << "Return Completed" << endl;
 
                 break;
 
             case 3:
                 // View all available books
+                for(int i = 0; i < books.size(); i++){
+                  if(books[i]->getPersonPtr() == nullptr){
+                    cout << "Book ID: " << books[i]->getId() << endl;
+                    cout << "Title: " << books[i]->getTitle() << endl;
+                    cout << "Author: " << books[i]->getAuthor() << endl;
+                    cout << "Category: " << books[i]->getCategory() << endl;
+                    cout << endl;
+                  }
+                }
                 break;
 
             case 4:
@@ -224,6 +223,48 @@ int main()
 
             case 7:
                 // Close library card
+                cout << "Please enter the card ID: ";
+                cin >> cardID;
+
+                  for(int k = 0; k < cardholders.size(); k++){
+                    if(cardID == cardholders[k]->getId()){
+                      cardIndex = k;
+                    }
+                  }
+                  if(cardholders[cardIndex]->isActive() == 0){
+                    cout << "Card is already inactive" << endl;
+                  }
+                  else{
+                    cout << "Cardholder: " << cardholders[cardIndex]->fullName() << endl;
+                    cout << "Are you sure you want to deactivate card (y/n)? ";
+                    cin >> ynChoice;
+                    if(ynChoice == 'y' || ynChoice == 'Y'){
+                        cardholders[cardIndex]->setActive(0);
+                        cout << "Card ID deactivated" << endl;
+                    }
+                  }
+
+                  /*  cout << "Cardholder: " << cardholders[index]->fullName() << endl;
+                    cout << "Are you sure you want to deactivate card (y/n)? ";
+                    cin >> ynChoice;
+                    if(ynChoice == 'y' || ynChoice == 'Y'){
+                      if(cardholders[k]->isActive() == 0){
+                        cout << "Card is already inactive" << endl;
+                      }
+                      else{
+                      cardholders[k]->setActive(0);
+                      cout << "Card ID deactivated" << endl;
+                      }
+                    }
+                    else{
+                      break;
+                    }
+                    break;
+                  }
+                  else if(cardID != cardholders[k]->getId() && cardholders.back()->getId() == lastID){
+                    cout << "Card ID not found" << endl;
+                  }
+                }*/
                 break;
 
             case 8:
