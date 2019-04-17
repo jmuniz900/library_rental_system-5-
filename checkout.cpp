@@ -97,7 +97,15 @@ void readPersons(vector<Person *> & myCardholders) {
 
 void readRentals(vector<Book *> & myBooks, vector<Person *> myCardholders) {
     for(int i = 0; i < myBooks.size(); i++){
-      if(myBooks[i].getPersonPtr() != nullptr)
+      if(myBooks[i]->getPersonPtr() != nullptr){
+        cout << endl;
+        cout << "Book ID: " << myBooks[i]->getId() << endl;
+        cout << "Title: " << myBooks[i]->getTitle() << endl;
+        cout << "Author: " << myBooks[i]->getAuthor() << endl;
+        cout << "Cardholder: " << myBooks[i]->getPersonPtr()->fullName() << endl;
+        cout << "Card ID: " << myBooks[i]->getPersonPtr()->getId() << endl;
+      }
+
     }
     return;
 }
@@ -179,7 +187,8 @@ int main()
                 cout << "Please enter the book ID: ";
                 cin >> bookID;
                 cout << "Title: " << searchBook(books, bookID)->getTitle() << endl;
-
+                searchBook(books, bookID)->setPersonPtr(cardholders[cardIndex]);
+                cout << "Book rental complete" << endl;
                 break;
 
             case 2:
@@ -187,7 +196,7 @@ int main()
                 cout << "Please enter the book ID to return: ";
                 cin >> bookID;
 
-                cout << "Title: " << *it << endl;
+                cout << "Title: " << searchBook(books, bookID)->getTitle() << endl;
                 searchBook(books, bookID)->setPersonPtr(nullptr);
                 cout << "Return Completed" << endl;
 
@@ -208,6 +217,7 @@ int main()
 
             case 4:
                 // View all outstanding rentals
+                readRentals(books, cardholders);
                 break;
 
             case 5:
